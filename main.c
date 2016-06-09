@@ -31,17 +31,36 @@
 
 #include "fsl_device_registers.h"
 #include "fsl_debug_console.h"
+#include "fsl_gpio.h"
 #include "board.h"
 #include "pin_mux.h"
 #include "clock_config.h"
 
-int main(void) {
-  
-  BOARD_InitPins(); 
-  BOARD_BootClockRUN();
-  BOARD_InitDebugConsole();
+void delay(void) {
+    volatile uint32_t i = 0;
+    for (i = 0; i < 800000; ++i) {
+        __asm("NOP"); /* delay */
+    }
+}
 
-  for(;;) { /* Infinite loop to avoid leaving the main function */
-    __asm("NOP"); /* something to use as a breakpoint stop while looping */
-  }
+int main(void) {
+    BOARD_InitPins();
+    BOARD_BootClockRUN();
+    BOARD_InitDebugConsole();
+
+    GPIO_PinInit(BOARD_LED_RED_GPIO, BOARD_LED_RED_GPIO_PIN, \
+        &(gpio_pin_config_t){kGPIO_DigitalOutput, 0u});
+    GPIO_PinInit(BOARD_LED_GREEN_GPIO, BOARD_LED_GREEN_GPIO_PIN, \
+        &(gpio_pin_config_t){kGPIO_DigitalOutput, 0u});
+    GPIO_PinInit(BOARD_LED_BLUE_GPIO, BOARD_LED_BLUE_GPIO_PIN, \
+        &(gpio_pin_config_t){kGPIO_DigitalOutput, 0u});
+
+    GPIO_SetPinsOutput(BOARD_LED_RED_GPIO, 1u << BOARD_LED_RED_GPIO_PIN);
+    GPIO_SetPinsOutput(BOARD_LED_GREEN_GPIO, 1u << BOARD_LED_GREEN_GPIO_PIN);
+    GPIO_SetPinsOutput(BOARD_LED_BLUE_GPIO, 1u << BOARD_LED_BLUE_GPIO_PIN);
+
+    for(;;) {
+        GPIO_TogglePinsOutput(BOARD_LED_BLUE_GPIO, 1u << BOARD_LED_BLUE_GPIO_PIN);
+        delay();
+    }
 }
