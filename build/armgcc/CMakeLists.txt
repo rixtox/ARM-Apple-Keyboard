@@ -137,6 +137,7 @@ SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -z")
 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -Xlinker")
 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} muldefs")
 
+include_directories(${SrcDirPath})
 include_directories(${LibDirPath}/CMSIS/Include)
 include_directories(${LibDirPath}/devices/MK22F51212)
 include_directories(${LibDirPath}/devices/MK22F51212/drivers)
